@@ -1,24 +1,24 @@
-import { useState,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
 
 function App() {
   const [todo, setTodo] = useState("")
   const [todos, setTodos] = useState([])
-  
-  const handleAdd=()=>{
-    setTodos([...todos,{todo,isCompleted: false}])
+
+  const handleAdd = () => {
+    setTodos([...todos, { todo, isCompleted: false }])
     setTodo("")
-  } 
+  }
 
-  const handleEdit=()=>{
+  const handleEdit = () => {
 
   }
 
-  const handleDelete=()=>{
+  const handleDelete = () => {
 
   }
-  const handleChange=(e)=>{
-     setTodo(e.target.value)
+  const handleChange = (e) => {
+    setTodo(e.target.value)
   }
 
   return (
@@ -32,14 +32,14 @@ function App() {
         </div>
         <h2 className='text-lg font-bold'>My Tasks</h2>
         <div className="todos">
-          {todos.map(items=>{
-          return <div className="todo flex">
-            <div >{items.todo}</div>
-            <div className="buttons">
-              <button onClick={handleEdit} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-1'>Edit</button>
-              <button onClick={handleDelete} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-1'>Remove</button>
+          {todos.map(items => {
+            return <div key={items.todo}  className="todo flex">
+              <div className={items.isCompleted ? "" : "line-through"}>{items.todo}</div>
+              <div className="buttons">
+                <button onClick={handleEdit} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-1'>Edit</button>
+                <button onClick={handleDelete} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-1'>Remove</button>
+              </div>
             </div>
-          </div>
           })}
         </div>
       </div>
