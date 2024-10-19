@@ -28,7 +28,7 @@ function App() {
 
   const toggleCheck=(e)=>{
     let id=e.target.name;
-    let index=todos.filter(item=>{
+    let index=todos.findIndex(item=>{
       return item.id===id;
     })
     let newTodos=[...todos];
