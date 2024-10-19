@@ -1,24 +1,39 @@
 import { useState,useEffect } from 'react'
 import Navbar from './components/Navbar'
+import { v4 as uuidv4 } from 'uuid';
 
 function App() {
   const [todo, setTodo] = useState("")
   const [todos, setTodos] = useState([])
   
   const handleAdd=()=>{
-    setTodos([...todos,{todo,isCompleted: false}])
+    setTodos([...todos,{todo,id:uuidv4(),isCompleted: false}])
     setTodo("")
+    console.log(todos)
   } 
 
   const handleEdit=()=>{
 
   }
 
-  const handleDelete=()=>{
-
+  const handleDelete=(e,id)=>{
+      let newTodos=todos.filter(item=>{
+        return item.id!==id;
+      })
+    setTodos(newTodos)
   }
   const handleChange=(e)=>{
      setTodo(e.target.value)
+  }
+
+  const toggleCheck=(e)=>{
+    let id=e.target.name;
+    let index=todos.filter(item=>{
+      return item.id===id;
+    })
+    let newTodos=[...todos];
+    newTodos[index].isCompleted=!newTodos[index].isCompleted
+    setTodos(newTodos)
   }
 
   return (
@@ -33,11 +48,12 @@ function App() {
         <h2 className='text-lg font-bold'>My Tasks</h2>
         <div className="todos">
           {todos.map(items=>{
-          return <div className="todo flex">
-            <div >{items.todo}</div>
+          return <div key={items.id} className="todo flex w-[45%] justify-between my-3">
+            <input type="checkbox" value={items.isCompleted} onChange={toggleCheck} name={items.id} id="" />
+            <div className={items.isCompleted?"line-through":""}>{items.todo}</div>
             <div className="buttons">
               <button onClick={handleEdit} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-1'>Edit</button>
-              <button onClick={handleDelete} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-1'>Remove</button>
+              <button onClick={(e)=>{handleDelete(e,items.id) }} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-1'>Remove</button>
             </div>
           </div>
           })}
