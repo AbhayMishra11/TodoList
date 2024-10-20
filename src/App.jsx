@@ -5,25 +5,24 @@ import { v4 as uuidv4 } from 'uuid';
 function App() {
   const [todo, setTodo] = useState("")
   const [todos, setTodos] = useState([])
-  const [showFinshed, setshowFinshed] = useState()
+  const [showFinshed, setshowFinshed] = useState(true)
 
   useEffect(() => {
-    let todostring=localStorage.getItem("todos")
-    if(todostring){
+    let todostring = localStorage.getItem("todos")
+    if (todostring) {
       setTodos(JSON.parse(todostring))
     }
   }, [])
-  
-  
-  const saveToLS=(pramas)=>{
-    localStorage.setItem("todos",JSON.stringify(todos))
+
+
+  const saveToLS = (pramas) => {
+    localStorage.setItem("todos", JSON.stringify(pramas))
   }
 
   const handleAdd = () => {
-    setTodos([...todos, { todo, id: uuidv4(), isCompleted: false }])
-    setTodo("")
-    console.log(todos)
-    saveToLS(todos)
+      setTodos([...todos, { todo, id: uuidv4(), isCompleted: false }])
+      setTodo("")
+      saveToLS(todos)
   }
 
   const handleEdit = (e, id) => {
@@ -58,6 +57,11 @@ function App() {
     saveToLS(newTodos)
   }
 
+  const showHide=(e)=>{
+      setshowFinshed(!showFinshed)
+      
+  }
+
   return (
     <>
       <Navbar />
@@ -65,18 +69,18 @@ function App() {
         <div className="addTodo my-5">
           <h2 className='text-lg font-bold'>Add a Todo</h2>
           <input type="text" className='w-2/5' onChange={handleChange} value={todo} />
-          <button onClick={handleAdd} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-6'>Add</button>
+          <button onClick={handleAdd} disabled={todo.length<3}  className='disabled:bg-violet-500 bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-6'>Add</button>
         </div>
-        <input type="checkbox" value={showFinshed} />
+        <input type="checkbox" onChange={showHide} checked={showFinshed}/> Show Finished
         <h2 className='text-lg font-bold'>My Tasks</h2>
         <div className="todos">
           {todos.length === 0 && <div>No todos to show</div>}
           {todos.map(items => {
-            return <div key={items.id} className="todo flex w-[45%] justify-between my-3">
+            return (showFinshed || !items.isCompleted) && <div key={items.id} className="todo flex w-[45%] justify-between my-3">
               <div className='flex gap-5'>
-                <input className='hidden' type="checkbox" value={items.isCompleted} onChange={toggleCheck} name={items.id} id={items.id} />
+                <input className='' type="checkbox" checked={items.isCompleted} onChange={toggleCheck} name={items.id} id={items.id} />
                 <label htmlFor={items.id}>
-                <div className={items.isCompleted ? "line-through" : ""}>{items.todo}</div>
+                  <div className={items.isCompleted ? "line-through" : ""}>{items.todo}</div>
                 </label></div>
               <div className="buttons">
                 <button onClick={(e) => { handleEdit(e, items.id) }} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-1'>Edit</button>
