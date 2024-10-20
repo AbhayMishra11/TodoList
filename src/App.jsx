@@ -5,11 +5,25 @@ import { v4 as uuidv4 } from 'uuid';
 function App() {
   const [todo, setTodo] = useState("")
   const [todos, setTodos] = useState([])
+  const [showFinshed, setshowFinshed] = useState()
+
+  useEffect(() => {
+    let todostring=localStorage.getItem("todos")
+    if(todostring){
+      setTodos(JSON.parse(todostring))
+    }
+  }, [])
+  
+  
+  const saveToLS=(pramas)=>{
+    localStorage.setItem("todos",JSON.stringify(todos))
+  }
 
   const handleAdd = () => {
     setTodos([...todos, { todo, id: uuidv4(), isCompleted: false }])
     setTodo("")
     console.log(todos)
+    saveToLS(todos)
   }
 
   const handleEdit = (e, id) => {
@@ -19,6 +33,7 @@ function App() {
       return item.id !== id;
     })
     setTodos(newTodos)
+    saveToLS(newTodos)
   }
 
   const handleDelete = (e, id) => {
@@ -26,6 +41,7 @@ function App() {
       return item.id !== id;
     })
     setTodos(newTodos)
+    saveToLS(newTodos)
   }
   const handleChange = (e) => {
     setTodo(e.target.value)
@@ -39,6 +55,7 @@ function App() {
     let newTodos = [...todos];
     newTodos[index].isCompleted = !newTodos[index].isCompleted
     setTodos(newTodos)
+    saveToLS(newTodos)
   }
 
   return (
@@ -50,15 +67,17 @@ function App() {
           <input type="text" className='w-2/5' onChange={handleChange} value={todo} />
           <button onClick={handleAdd} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-6'>Add</button>
         </div>
+        <input type="checkbox" value={showFinshed} />
         <h2 className='text-lg font-bold'>My Tasks</h2>
         <div className="todos">
           {todos.length === 0 && <div>No todos to show</div>}
           {todos.map(items => {
             return <div key={items.id} className="todo flex w-[45%] justify-between my-3">
               <div className='flex gap-5'>
-                <input type="checkbox" value={items.isCompleted} onChange={toggleCheck} name={items.id} id="" />
+                <input className='hidden' type="checkbox" value={items.isCompleted} onChange={toggleCheck} name={items.id} id={items.id} />
+                <label htmlFor={items.id}>
                 <div className={items.isCompleted ? "line-through" : ""}>{items.todo}</div>
-              </div>
+                </label></div>
               <div className="buttons">
                 <button onClick={(e) => { handleEdit(e, items.id) }} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-1'>Edit</button>
                 <button onClick={(e) => { handleDelete(e, items.id) }} className='bg-violet-800 hover:bg-violet-950 p-2 py-1 rounded-md text-sm text-white mx-1'>Remove</button>
